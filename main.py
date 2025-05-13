@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project_name.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'py_game_models.settings')
 application = get_wsgi_application()
 
 from db.models import Race, Skill, Guild, Player
@@ -15,6 +15,7 @@ def main():
     for player_data in players_data:
         race_name = player_data['race']
         guild_name = player_data.get('guild')
+        skills_data = player_data.get('skills', [])
 
         race, _ = Race.objects.get_or_create(name=race_name)
 
@@ -32,10 +33,11 @@ def main():
             }
         )
 
-        for skill_name in player_data.get('skills', []):
-            Skill.objects.get_or_create(name=skill_name, race=race, defaults={'bonus': 'Опис бонусу для ' + skill_name})
+        for skill_name in skills_data:
+            skill, _ = Skill.objects.get_or_create(name=skill_name, race=race, defaults={'bonus': f'Опис бонусу для {skill_name}'})
+            player.skills.add(skill)
 
-    print("Дані гравців успішно додано до бази даних.")
+    print("Дані гравців та їх навичок успішно додано до бази даних.")
 
 if __name__ == "__main__":
     main()

@@ -35,6 +35,7 @@ class Player(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE)
     guild = models.ForeignKey(Guild, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    skills = models.ManyToManyField(Skill)
 
     def __str__(self):
         return self.nickname
